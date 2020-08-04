@@ -1,10 +1,15 @@
 <div class="main-container">
-  <div class="count" *ngIf="noOfCells">
-    <div class="key">
-      Score:
+  <div class="count-reset">
+    <div class="count" *ngIf="noOfCells">
+      <div class="key">
+        Score:
+      </div>
+      <div class="value">
+        {{overallCount}}
+      </div>
     </div>
-    <div class="value">
-      {{overallCount}}
+    <div class="reset" *ngIf="noOfCells">
+      <button mat-raised-button (click)="resetGame()">Reset Game</button>
     </div>
   </div>
   <div class="choose-container" *ngIf="showChoose">
@@ -37,6 +42,8 @@
   <app-all-cells
     *ngIf="noOfCells"
     (resetEmitter)="resetApp()"
+    [resetGameHandler]="resetGameValue"
+    (resetGameHandlerValue)="resetGameValue = $event"
     (overallCountEmitter)="overallCount = $event"
     [noOfCells]="noOfCells"></app-all-cells>
 </div>

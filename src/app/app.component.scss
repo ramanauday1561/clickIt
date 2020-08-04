@@ -4,21 +4,29 @@
   height: 100vh;
   width: 100vw;
   overflow: hidden;
-  .count {
-    margin: 40px 0;
+  .count-reset {
     display: flex;
     align-items: center;
     justify-content: center;
-    .key {
-      font-size: 18px;
-      color: #333333;
-      opacity: 0.52;
-      margin-right: 10px;
+    .count {
+      margin: 40px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .key {
+        font-size: 18px;
+        color: #333333;
+        opacity: 0.52;
+        margin-right: 10px;
+      }
+      .value {
+        font-size: 24px;
+        color: #333333;
+        opacity: 0.82;
+      }
     }
-    .value {
-      font-size: 24px;
-      color: #333333;
-      opacity: 0.82;
+    .reset {
+      margin-left: 80px;
     }
   }
   .choose-container {

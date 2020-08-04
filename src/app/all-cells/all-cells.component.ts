@@ -11,15 +11,18 @@ import { BehaviorSubject } from "rxjs";
 export class AllCellsComponent implements OnInit, OnChanges {
 
   @Input('noOfCells') noOfCells: number;
+  @Input('resetGameHandler') resetGameHandler: boolean;
   public activeState: number;
   public overallCount = 0;
   public overallList: any;
   private lastRandom: number;
   private initialValue = 0;
+  private currentActiveTimeout: any;
   private initialValueSubject = new BehaviorSubject<number | null>(0);
 
   @Output() overallCountEmitter = new EventEmitter();
   @Output() resetEmitter = new EventEmitter();
+  @Output() resetGameHandlerValue = new EventEmitter();
 
   constructor(public dialog: MatDialog) { }
 
@@ -28,7 +31,7 @@ export class AllCellsComponent implements OnInit, OnChanges {
       this.setTimeoutRecursive();
     }, 300);
     this.initialValueSubject.subscribe(res => {
-      if (res === 120) {
+      if (res === 12) {
         if (localStorage.getItem('high-score')) {
           if (+localStorage.getItem('high-score') < this.overallCount) {
             localStorage.setItem('high-score', String(this.overallCount));
@@ -43,9 +46,9 @@ export class AllCellsComponent implements OnInit, OnChanges {
 
   setTimeoutRecursive() {
     this.initialValueSubject.next(this.initialValue);
-    if (this.initialValue !== 120) {
+    if (this.initialValue < 12) {
       this.activeState = this.randomInRange(1, this.noOfCells);
-      setTimeout(this.setTimeoutRecursive.bind(this), 1000);
+      this.currentActiveTimeout = setTimeout(this.setTimeoutRecursive.bind(this), 1000);
       this.initialValue++;
     }
   }
@@ -85,6 +88,16 @@ export class AllCellsComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (this.noOfCells) {
       this.overallList = new Array(this.noOfCells).fill(0);
+    }
+    if (this.resetGameHandler) {
+      clearTimeout(this.currentActiveTimeout);
+      setTimeout(() => {
+        this.initialValue = 0;
+        this.overallCount = 0;
+        this.overallCountEmitter.emit(0);
+        this.setTimeoutRecursive();
+        this.resetGameHandlerValue.emit(false);
+      }, 300);
     }
   }
 

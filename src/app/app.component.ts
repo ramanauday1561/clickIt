@@ -20,6 +20,7 @@ export class AppComponent implements OnInit {
   }];
   public overallCount: number = 0;
   showChoose: boolean;
+  resetGameValue: boolean = false;
 
   ngOnInit(): void {
     this.showChoose = true;
@@ -33,5 +34,9 @@ export class AppComponent implements OnInit {
   resetApp() {
     this.showChoose = true;
     this.noOfCells = 0;
+  }
+
+  resetGame() {
+    this.resetGameValue = true;
   }
 }
