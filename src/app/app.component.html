@@ -9,7 +9,25 @@
       </div>
     </div>
     <div class="reset" *ngIf="noOfCells">
-      <button mat-raised-button (click)="resetGame()">Reset Game</button>
+      <button mat-raised-button (click)="resetGame()">
+        {{buttonStatus ? 'Reset Game' : 'Start Game'}}
+      </button>
+    </div>
+    <div class="highest-score" *ngIf="noOfCells">
+      <div class="key">
+        High Score:
+      </div>
+      <div class="value">
+        {{getHighScore()}}
+      </div>
+    </div>
+    <div class="timer-value" *ngIf="noOfCells">
+      <div class="key">
+        Timer:
+      </div>
+      <div class="value">
+        {{120 - timerValue}}
+      </div>
     </div>
   </div>
   <div class="choose-container" *ngIf="showChoose">
@@ -42,6 +60,8 @@
   <app-all-cells
     *ngIf="noOfCells"
     (resetEmitter)="resetApp()"
+    [stopTheGame]="stopTheGame"
+    (emitTimerValue)="timerValue = $event"
     [resetGameHandler]="resetGameValue"
     (resetGameHandlerValue)="resetGameValue = $event"
     (overallCountEmitter)="overallCount = $event"

@@ -7,6 +7,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AppComponent implements OnInit {
   public noOfCells: number;
+  public timerValue: number;
+  public buttonStatus: boolean = true;
+  public stopTheGame: boolean = false;
 
   allTypes = [{
     level: 'Easy',
@@ -37,6 +40,19 @@ export class AppComponent implements OnInit {
   }
 
   resetGame() {
-    this.resetGameValue = true;
+    if (this.buttonStatus) {
+      this.resetGameValue = true;
+      this.stopTheGame = true;
+    } else {
+      this.stopTheGame = false;
+    }
+    this.buttonStatus = !this.buttonStatus;
+  }
+
+  getHighScore() {
+    if (localStorage.getItem('high-score')) {
+      return +localStorage.getItem('high-score');
+    }
+    return 0
   }
 }

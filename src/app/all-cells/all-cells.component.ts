@@ -12,17 +12,22 @@ export class AllCellsComponent implements OnInit, OnChanges {
 
   @Input('noOfCells') noOfCells: number;
   @Input('resetGameHandler') resetGameHandler: boolean;
+  @Input('stopTheGame') stopTheGame: boolean;
   public activeState: number;
   public overallCount = 0;
   public overallList: any;
   private lastRandom: number;
   private initialValue = 0;
+  public previousStopValue: number;
   private currentActiveTimeout: any;
+  private stopGameValue: boolean = false;
+  private currentIndexClick: boolean = false;
   private initialValueSubject = new BehaviorSubject<number | null>(0);
 
   @Output() overallCountEmitter = new EventEmitter();
   @Output() resetEmitter = new EventEmitter();
   @Output() resetGameHandlerValue = new EventEmitter();
+  @Output() emitTimerValue = new EventEmitter();
 
   constructor(public dialog: MatDialog) { }
 
@@ -46,10 +51,12 @@ export class AllCellsComponent implements OnInit, OnChanges {
 
   setTimeoutRecursive() {
     this.initialValueSubject.next(this.initialValue);
-    if (this.initialValue < 120) {
+    if (this.initialValue < 120 && !this.stopGameValue) {
+      this.currentIndexClick = false;
       this.activeState = this.randomInRange(1, this.noOfCells);
       this.currentActiveTimeout = setTimeout(this.setTimeoutRecursive.bind(this), 1000);
       this.initialValue++;
+      this.emitTimerValue.emit(this.initialValue);
     }
   }
 
@@ -77,8 +84,9 @@ export class AllCellsComponent implements OnInit, OnChanges {
   }
 
   clickListener(index: number) {
-    if (this.activeState === index) {
+    if (this.activeState === index && !this.currentIndexClick) {
       this.overallCount += 1;
+      this.currentIndexClick = true;
     } else {
       this.overallCount = this.overallCount > 0 ? this.overallCount - 1 : 0;
     }
@@ -92,12 +100,39 @@ export class AllCellsComponent implements OnInit, OnChanges {
     if (this.resetGameHandler) {
       clearTimeout(this.currentActiveTimeout);
       setTimeout(() => {
-        this.initialValue = 0;
+        // this.initialValue = 0;
         this.overallCount = 0;
         this.overallCountEmitter.emit(0);
         this.setTimeoutRecursive();
         this.resetGameHandlerValue.emit(false);
       }, 300);
+    }
+    if (this.stopTheGame) {
+      this.stopGameHandler();
+    } else {
+      this.restartTheGame();
+    }
+  }
+
+  stopGameHandler() {
+    this.previousStopValue = this.initialValue;
+    this.stopGameValue = true;
+    this.initialValue = 0;
+    this.overallCount = 0;
+    this.activeState = -1;
+    this.initialValueSubject.next(this.initialValue);
+    this.emitTimerValue.emit(this.initialValue);
+    this.overallCountEmitter.emit(this.overallCount)
+    clearTimeout(this.currentActiveTimeout);
+  }
+
+  restartTheGame() {
+    if (this.previousStopValue || this.previousStopValue == 0) {
+      setTimeout(() => {
+        this.stopGameValue = false;
+        this.initialValue = this.previousStopValue;
+        this.setTimeoutRecursive();
+      }, 200);
     }
   }
 
