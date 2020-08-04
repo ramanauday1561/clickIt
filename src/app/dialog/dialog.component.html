@@ -1,0 +1,10 @@
+<h1 mat-dialog-title>Game Over</h1>
+<div mat-dialog-content>
+  <p class="text-content">Your current score is: <span class="count-modal">{{data.count}}</span></p>
+  <p *ngIf="getHighScore()" class="text-content">
+    High score is: <span class="high-score-modal">{{getHighScore()}}</span>
+  </p>
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button (click)="onNoClick()">Ok</button>
+</div>

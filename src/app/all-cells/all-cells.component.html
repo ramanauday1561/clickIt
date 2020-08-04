@@ -1,0 +1,11 @@
+<div class="outer-container" *ngIf="overallList"
+     [ngClass]="{
+      'width-3': noOfCells === 9,
+      'width-4': noOfCells === 16,
+      'width-5': noOfCells === 25
+     }">
+  <div class="each-cell"
+       (click)="clickListener(i)"
+       [ngClass]="{'active-cell': activeState === i}"
+       *ngFor="let each of overallList; let i = index"></div>
+</div>
