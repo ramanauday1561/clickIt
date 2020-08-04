@@ -31,7 +31,7 @@ export class AllCellsComponent implements OnInit, OnChanges {
       this.setTimeoutRecursive();
     }, 300);
     this.initialValueSubject.subscribe(res => {
-      if (res === 12) {
+      if (res === 120) {
         if (localStorage.getItem('high-score')) {
           if (+localStorage.getItem('high-score') < this.overallCount) {
             localStorage.setItem('high-score', String(this.overallCount));
@@ -46,7 +46,7 @@ export class AllCellsComponent implements OnInit, OnChanges {
 
   setTimeoutRecursive() {
     this.initialValueSubject.next(this.initialValue);
-    if (this.initialValue < 12) {
+    if (this.initialValue < 120) {
       this.activeState = this.randomInRange(1, this.noOfCells);
       this.currentActiveTimeout = setTimeout(this.setTimeoutRecursive.bind(this), 1000);
       this.initialValue++;
